@@ -1,3 +1,12 @@
+import Notiflix from 'notiflix';
+
+Notiflix.Notify.init({
+  width: '600px',
+  position: 'center',
+  closeButton: true,
+  backOverlay: true,
+});
+
 const container = document.querySelector('.js-content');
 let player = 'X';
 let historyX = [];
@@ -12,6 +21,7 @@ const wins = [
   [1, 5, 9],
   [3, 5, 7],
 ];
+// wins.style.backgroundColor = 'teal';
 
 function createMarkup() {
   let markup = '';
@@ -32,30 +42,48 @@ function onClickBtn(e) {
 
   const id = Number(target.dataset.id);
   let result = false;
+  let winRow = null;
   if (player === 'X') {
     historyX.push(id);
     result = isWinner(historyX);
+    winRow = result;
   } else {
     historyO.push(id);
     result = isWinner(historyO);
+    winRow = result;
   }
   target.textContent = player;
   if (result) {
-    // console.log(`Winner ${player}`);
-    alert(`Winner ${player}`);
+    colorWinRow(winRow);
+    Notiflix.Notify.success(`Winner ${player}`);
+
     resetGame();
     return;
   } else if (historyO.length + historyX.length === 9) {
-    // console.log(`You have drawn`);
-    alert(`You have drawn`);
+    Notiflix.Notify.info(`You have drawn`);
     resetGame();
     return;
   }
   player = player === 'X' ? 'O' : 'X';
 }
-
+function colorWinRow(winRow) {
+  if (!winRow) {
+    return;
+  }
+  for (const id of winRow) {
+    const winCell = document.querySelector(`.js-item[data-id="${id}"]`);
+    winCell.classList.add('winning-cell');
+    // winCell.style.backgroundColor = 'red';
+    console.log(winCell);
+  }
+}
 function isWinner(array) {
-  return wins.some(item => item.every(id => array.includes(id)));
+  const winRow = wins.find(item => item.every(id => array.includes(id)));
+  //   console.log(winRow);
+  return winRow;
+
+  //   return winRow ? winRow : null;
+  //   return wins.some(item => item.every(id => array.includes(id)));
 }
 
 function resetGame() {
