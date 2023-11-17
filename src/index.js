@@ -25,7 +25,6 @@ const wins = [
   [1, 5, 9],
   [3, 5, 7],
 ];
-// wins.style.backgroundColor = 'teal';
 
 function createMarkup() {
   let markup = '';
@@ -61,14 +60,13 @@ function onCellClick(e) {
     colorWinRow(winRow);
     Notiflix.Notify.success(`Winner ${player}`);
 
-    // resetGame();
     return;
   } else if (historyO.length + historyX.length === 9) {
     Notiflix.Notify.info(`You have drawn`);
-    // resetGame();
     return;
   }
   player = player === 'X' ? 'O' : 'X';
+  currentPlayer.innerHTML = player;
 }
 function colorWinRow(winRow) {
   if (!winRow) {
@@ -77,7 +75,6 @@ function colorWinRow(winRow) {
   for (const id of winRow) {
     const winCell = document.querySelector(`.js-item[data-id="${id}"]`);
     winCell.classList.add('winning-cell');
-    // winCell.style.backgroundColor = 'red';
     console.log(winCell);
   }
 }
@@ -85,9 +82,6 @@ function isWinner(array) {
   const winRow = wins.find(item => item.every(id => array.includes(id)));
   //   console.log(winRow);
   return winRow;
-
-  //   return winRow ? winRow : null;
-  //   return wins.some(item => item.every(id => array.includes(id)));
 }
 
 btnRestart.addEventListener('click', onBtnclick);
