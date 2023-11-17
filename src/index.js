@@ -11,6 +11,7 @@ Notiflix.Notify.init({
 
 const container = document.querySelector('.js-content');
 const btnRestart = document.querySelector('.btnrestart');
+const btnUpdate = document.querySelector('.btnreload');
 const currentPlayer = document.querySelector('#curPlyr');
 const playerXName = document.querySelector('#playerXName');
 const playerOName = document.querySelector('#playerOName');
@@ -18,8 +19,12 @@ const playerOName = document.querySelector('#playerOName');
 let player = 'X';
 let historyX = [];
 let historyO = [];
-let stat = JSON.parse(localStorage.getItem('gameStat')) || { x: 0, o: 0, d: 0 };
 
+let stat = {
+  X: 0,
+  O: 0,
+  D: 0,
+};
 const wins = [
   [1, 2, 3],
   [4, 5, 6],
@@ -57,30 +62,32 @@ function onCellClick(e) {
     historyX.push(id);
     result = isWinner(historyX);
     winRow = result;
-    stat.x += 1;
   } else {
     historyO.push(id);
     result = isWinner(historyO);
     winRow = result;
-    stat.o += 1;
   }
   target.textContent = player;
   if (result) {
     colorWinRow(winRow);
+    stat[player] += 1;
 
-    // const winPlayer = playerXName.player || playerOName.player;
-    Notiflix.Notify.success(`Winner ${player}`);
+    //   Notiflix.Notify.success(`Winner ${player}`);
+    Notiflix.Notify.success(
+      `Winner ${player === 'X' ? playerXName.value : playerOName.value}`
+    );
 
-    saveStatToLocalStorage();
+    updateStat();
     return;
   } else if (historyO.length + historyX.length === 9) {
-    stat.d += 1;
+    stat.D += 1;
     Notiflix.Notify.info(`You have drawn`);
-    saveStatToLocalStorage();
+    updateStat();
     return;
   }
   player = player === 'X' ? 'O' : 'X';
   currentPlayer.innerHTML = player;
+  updateStat();
 }
 function colorWinRow(winRow) {
   if (!winRow) {
@@ -105,23 +112,22 @@ function onBtnclick() {
   currentPlayer.innerHTML = player;
 }
 function handleInputChange() {
-  const playerNameX = playerXName.value || 'Player X';
-  const playerNameO = playerOName.value || 'Player O';
-  console.log('Player X:', playerNameX);
-  console.log('Player O:', playerNameO);
+  playerXName.value || 'Player X';
+  playerOName.value || 'Player O';
 }
 
 handleInputChange();
 
 function updateStat() {
-  const countX = document.querySelector('#sX');
-  const countO = document.querySelector('#sO');
-  const countD = document.querySelector('#sD');
-  countX.textContent = stat.x;
-  countO.textContent = stat.o;
-  countD.textContent = stat.d;
+  document.querySelector('#sX').innerHTML = stat.X;
+  document.querySelector('#sO').innerHTML = stat.O;
+  document.querySelector('#sD').innerHTML = stat.D;
 }
-function saveStatToLocalStorage() {
-  localStorage.setItem('gameStat', JSON.stringify(stat));
+btnUpdate.addEventListener('click', onBtnUpclick);
+function onBtnUpclick() {
+  onBtnclick();
+  playerXName.value = '';
+  playerOName.value = '';
+  stat = { X: 0, O: 0, D: 0 };
   updateStat();
 }

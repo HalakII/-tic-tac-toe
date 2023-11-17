@@ -40,7 +40,8 @@
 .winning-cell {
   background-color: rgb(128, 135, 233);
 }
-.btnrestart {
+.btnrestart,
+.btnreload {
   width: 200px;
   margin: 0 auto;
   display: inline-block;
