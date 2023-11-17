@@ -9,6 +9,9 @@ Notiflix.Notify.init({
 
 const container = document.querySelector('.js-content');
 const btnRestart = document.querySelector('.btnrestart');
+const currentPlayer = document.querySelector('#curPlyr');
+console.log(currentPlayer);
+
 let player = 'X';
 let historyX = [];
 let historyO = [];

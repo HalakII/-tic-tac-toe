@@ -8,9 +8,30 @@
   </head>
   <body>
     <div class="container">
+      <div class="currentPlayer">
+        <span>Now goes: <span id="curPlyr">X</span></span>
+      </div>
       <div class="js-content content"></div>
 
-      <button type="button" class="btnrestart">Restart</button>
+      <button type="button" class="btnrestart">Restart Game</button>
+
+      <div class="stat">
+        <table>
+          <th colspan="2">Statistics</th>
+          <tr>
+            <td>X</td>
+            <td><span id="sX">0</span></td>
+          </tr>
+          <tr>
+            <td>O</td>
+            <td><span id="sO">0</span></td>
+          </tr>
+          <tr>
+            <td>Drawn</td>
+            <td><span id="sD">0</span></td>
+          </tr>
+        </table>
+      </div>
     </div>
 
     <script type="module" src="./index.js"></script>
