@@ -8,6 +8,7 @@ Notiflix.Notify.init({
 });
 
 const container = document.querySelector('.js-content');
+const btnRestart = document.querySelector('.btnrestart');
 let player = 'X';
 let historyX = [];
 let historyO = [];
@@ -32,9 +33,9 @@ function createMarkup() {
 }
 createMarkup();
 
-container.addEventListener('click', onClickBtn);
+container.addEventListener('click', onCellClick);
 
-function onClickBtn(e) {
+function onCellClick(e) {
   const target = e.target;
   if (!target.classList.contains('js-item') || target.textContent) {
     return;
@@ -42,7 +43,7 @@ function onClickBtn(e) {
 
   const id = Number(target.dataset.id);
   let result = false;
-  let winRow = null;
+  let winRow = [];
   if (player === 'X') {
     historyX.push(id);
     result = isWinner(historyX);
@@ -57,11 +58,11 @@ function onClickBtn(e) {
     colorWinRow(winRow);
     Notiflix.Notify.success(`Winner ${player}`);
 
-    resetGame();
+    // resetGame();
     return;
   } else if (historyO.length + historyX.length === 9) {
     Notiflix.Notify.info(`You have drawn`);
-    resetGame();
+    // resetGame();
     return;
   }
   player = player === 'X' ? 'O' : 'X';
@@ -86,7 +87,8 @@ function isWinner(array) {
   //   return wins.some(item => item.every(id => array.includes(id)));
 }
 
-function resetGame() {
+btnRestart.addEventListener('click', onBtnclick);
+function onBtnclick() {
   createMarkup();
   historyO = [];
   historyX = [];
