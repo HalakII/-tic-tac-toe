@@ -73,10 +73,12 @@ function onCellClick(e) {
     historyX.push(id);
     result = isWinner(historyX);
     winRow = result;
+    target.classList.add('player-X');
   } else {
     historyO.push(id);
     result = isWinner(historyO);
     winRow = result;
+    target.classList.add('player-O');
   }
   target.textContent = player;
   if (result) {
@@ -136,3 +138,7 @@ function onBtnUpclick() {
   stat = { X: 0, O: 0, D: 0 };
   updateStat();
 }
+
+// if (target.textContent === 'X') {
+//   target.textContent.style.color = 'red';
+// }
