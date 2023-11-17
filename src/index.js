@@ -19,7 +19,7 @@ const playerOName = document.querySelector('#playerOName');
 let player = 'X';
 let historyX = [];
 let historyO = [];
-
+let gameActive = true;
 let stat = {
   X: 0,
   O: 0,
@@ -46,10 +46,21 @@ function createMarkup() {
 createMarkup();
 
 container.addEventListener('click', onCellClick);
-playerXName.addEventListener('input', debounce(handleInputChange, 1000));
-playerOName.addEventListener('input', debounce(handleInputChange, 1000));
+playerXName.addEventListener(
+  'input',
+  debounce(() => console.log(playerXName.value), 1000)
+);
+
+playerOName.addEventListener(
+  'input',
+  debounce(() => console.log(playerOName.value), 1000)
+);
 
 function onCellClick(e) {
+  if (!gameActive) {
+    return;
+  }
+
   const target = e.target;
   if (!target.classList.contains('js-item') || target.textContent) {
     return;
@@ -71,18 +82,17 @@ function onCellClick(e) {
   if (result) {
     colorWinRow(winRow);
     stat[player] += 1;
-
-    //   Notiflix.Notify.success(`Winner ${player}`);
     Notiflix.Notify.success(
       `Winner ${player === 'X' ? playerXName.value : playerOName.value}`
     );
-
     updateStat();
+    gameActive = false;
     return;
   } else if (historyO.length + historyX.length === 9) {
     stat.D += 1;
     Notiflix.Notify.info(`You have drawn`);
     updateStat();
+    gameActive = false;
     return;
   }
   player = player === 'X' ? 'O' : 'X';
@@ -110,13 +120,8 @@ function onBtnclick() {
   historyX = [];
   player = 'X';
   currentPlayer.innerHTML = player;
+  gameActive = true;
 }
-function handleInputChange() {
-  playerXName.value || 'Player X';
-  playerOName.value || 'Player O';
-}
-
-handleInputChange();
 
 function updateStat() {
   document.querySelector('#sX').innerHTML = stat.X;
