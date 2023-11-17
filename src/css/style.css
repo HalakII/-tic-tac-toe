@@ -92,3 +92,9 @@
   text-align: center;
   color: rgb(165, 216, 216);
 }
+input {
+  background-color: rgb(165, 216, 216);
+  color: rgb(28, 36, 36);
+  padding: 5px;
+  border-radius: 10px;
+}

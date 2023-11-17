@@ -1,20 +1,25 @@
 import Notiflix from 'notiflix';
+import debounce from 'lodash.debounce';
 
 Notiflix.Notify.init({
   width: '600px',
   position: 'center',
-  closeButton: true,
+  closeButton: false,
   backOverlay: true,
+  cssAnimationDuration: 1000,
 });
 
 const container = document.querySelector('.js-content');
 const btnRestart = document.querySelector('.btnrestart');
 const currentPlayer = document.querySelector('#curPlyr');
-console.log(currentPlayer);
+const playerXName = document.querySelector('#playerXName');
+const playerOName = document.querySelector('#playerOName');
 
 let player = 'X';
 let historyX = [];
 let historyO = [];
+let stat = JSON.parse(localStorage.getItem('gameStat')) || { x: 0, o: 0, d: 0 };
+
 const wins = [
   [1, 2, 3],
   [4, 5, 6],
@@ -36,6 +41,8 @@ function createMarkup() {
 createMarkup();
 
 container.addEventListener('click', onCellClick);
+playerXName.addEventListener('input', debounce(handleInputChange, 1000));
+playerOName.addEventListener('input', debounce(handleInputChange, 1000));
 
 function onCellClick(e) {
   const target = e.target;
@@ -50,19 +57,26 @@ function onCellClick(e) {
     historyX.push(id);
     result = isWinner(historyX);
     winRow = result;
+    stat.x += 1;
   } else {
     historyO.push(id);
     result = isWinner(historyO);
     winRow = result;
+    stat.o += 1;
   }
   target.textContent = player;
   if (result) {
     colorWinRow(winRow);
+
+    // const winPlayer = playerXName.player || playerOName.player;
     Notiflix.Notify.success(`Winner ${player}`);
 
+    saveStatToLocalStorage();
     return;
   } else if (historyO.length + historyX.length === 9) {
+    stat.d += 1;
     Notiflix.Notify.info(`You have drawn`);
+    saveStatToLocalStorage();
     return;
   }
   player = player === 'X' ? 'O' : 'X';
@@ -75,12 +89,10 @@ function colorWinRow(winRow) {
   for (const id of winRow) {
     const winCell = document.querySelector(`.js-item[data-id="${id}"]`);
     winCell.classList.add('winning-cell');
-    console.log(winCell);
   }
 }
 function isWinner(array) {
   const winRow = wins.find(item => item.every(id => array.includes(id)));
-  //   console.log(winRow);
   return winRow;
 }
 
@@ -90,4 +102,26 @@ function onBtnclick() {
   historyO = [];
   historyX = [];
   player = 'X';
+  currentPlayer.innerHTML = player;
+}
+function handleInputChange() {
+  const playerNameX = playerXName.value || 'Player X';
+  const playerNameO = playerOName.value || 'Player O';
+  console.log('Player X:', playerNameX);
+  console.log('Player O:', playerNameO);
+}
+
+handleInputChange();
+
+function updateStat() {
+  const countX = document.querySelector('#sX');
+  const countO = document.querySelector('#sO');
+  const countD = document.querySelector('#sD');
+  countX.textContent = stat.x;
+  countO.textContent = stat.o;
+  countD.textContent = stat.d;
+}
+function saveStatToLocalStorage() {
+  localStorage.setItem('gameStat', JSON.stringify(stat));
+  updateStat();
 }
