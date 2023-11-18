@@ -101,15 +101,31 @@ function onCellClick(e) {
   currentPlayer.innerHTML = player;
   updateStat();
 }
+
 function colorWinRow(winRow) {
   if (!winRow) {
     return;
   }
   for (const id of winRow) {
     const winCell = document.querySelector(`.js-item[data-id="${id}"]`);
-    winCell.classList.add('winning-cell');
+    if (player === 'X') {
+      winCell.classList.add('winning-cellX');
+      winCell.classList.remove('winning-cellO');
+    } else if (player === 'O') {
+      winCell.classList.add('winning-cellO');
+      winCell.classList.remove('winning-cellX');
+    }
   }
 }
+// function colorWinRow(winRow) {
+//   if (!winRow) {
+//     return;
+//   }
+//   for (const id of winRow) {
+//     const winCell = document.querySelector(`.js-item[data-id="${id}"]`);
+//     winCell.classList.add('winning-cell');
+//   }
+// }
 function isWinner(array) {
   const winRow = wins.find(item => item.every(id => array.includes(id)));
   return winRow;
@@ -138,7 +154,3 @@ function onBtnUpclick() {
   stat = { X: 0, O: 0, D: 0 };
   updateStat();
 }
-
-// if (target.textContent === 'X') {
-//   target.textContent.style.color = 'red';
-// }
